@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build-project" name="freja">
+	<property file="build.properties" />
+
+	<path id="freja.classpath">
+		<pathelement location="bin" />
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<path id="freja.classpath.test">
+		<pathelement location="bin" />
+		<pathelement location="bin-test" />
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="lib-test">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/LICENSE.TXT" />
+				<exclude name="**/package.html" />
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<mkdir dir="bin-test" />
+		<copy includeemptydirs="false" todir="bin-test">
+			<fileset dir="test">
+				<exclude name="**/LICENSE.TXT" />
+				<exclude name="**/package.html" />
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<mkdir dir="dist" />
+	</target>
+
+	<target name="clean">
+		<delete dir="bin" />
+		<delete dir="bin-test" />
+		<delete dir="dist" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac debug="${compile.debug}" debuglevel="${compile.debuglevel}" destdir="bin" source="${compile.source}" target="${compile.target}" encoding="${source.encoding}">
+			<src path="src" />
+			<classpath refid="freja.classpath" />
+		</javac>
+		<javac debug="${compile.debug}" debuglevel="${compile.debuglevel}" destdir="bin-test" source="${compile.source}" target="${compile.target}" encoding="${source.encoding}">
+			<src path="test" />
+			<classpath refid="freja.classpath.test" />
+		</javac>
+	</target>
+
+	<target name="build-jar" depends="compile">
+		<jar jarfile="dist/freja.jar" basedir="bin">
+			<manifest>
+				<attribute name="Implementation-Title" value="${freja.title}" />
+				<attribute name="Implementation-Version" value="${freja.version}" />
+				<attribute name="Implementation-Vendor" value="${freja.vendor}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="build-javadoc" depends="init">
+		<mkdir dir="dist/doc" />
+		<javadoc destdir="dist/doc" windowtitle="${freja.doc.windowtitle}" encoding="${source.encoding}" docencoding="${source.encoding}" charset="Shift_JIS" access="private">
+			<fileset dir="src" />
+		</javadoc>
+		<zip destfile="dist/freja-doc.zip" basedir="dist/doc" update="true" excludes="**/*.bak" />
+	</target>
+	
+	<target name="build-src" depends="init">
+		<zip destfile="dist/freja-src.zip" basedir="src" update="true" excludes="**/*.bak" />
+	</target>
+	
+	<target name="build-project">
+		<antcall target="clean" />
+		<antcall target="build-jar" />
+		<antcall target="build-javadoc" />
+		<antcall target="build-src" />
+	</target>
+</project>

@@ -1,0 +1,7 @@
+handlers = java.util.logging.ConsoleHandler
+
+.level = INFO
+freja.level = ALL
+
+java.util.logging.ConsoleHandler.level = CONFIG
+java.util.logging.ConsoleHandler.formatter = freja.internal.logging.LineFormatter
