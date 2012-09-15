@@ -1,0 +1,8 @@
+/bin
+/bin-test
+/dist
+.svn
+y.output
+jcoverage.ser
+Thumbs.db
+*~
